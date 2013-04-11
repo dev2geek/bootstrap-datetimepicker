@@ -30,6 +30,7 @@
   var smartPhone = (window.orientation != undefined);
   var DateTimePicker = function(element, options) {
     this.id = dpgId++;
+    this._unset = true;
     this.init(element, options);
   };
   
@@ -166,7 +167,10 @@
 
     set: function() {
       var formatted = '';
-      if (!this._unset) formatted = this.formatDate(this._date);
+      if (!this._unset) {
+          formatted = this.formatDate(this._date);
+
+      }
       if (!this.isInput) {
         if (this.component){
           var input = this.$element.find('input');
@@ -181,7 +185,7 @@
     },
 
     setValue: function(newDate) {
-      if (!newDate) {
+        if (!newDate) {
         this._unset = true;
       } else {
         this._unset = false;
@@ -295,7 +299,13 @@
           dateStr = this.$element.find('input').val();
         }
         if (!dateStr) {
-          var tmp = new Date()
+          var tmp = new Date();
+          /*
+           * 7N: set it to 0 clock by default
+           * so it is not necessary for users to change time,
+           * if hour/minute/second is not important to users
+           */
+          tmp.setHours(0, 0, 0);
           this._date = UTCDate(tmp.getFullYear(),
                               tmp.getMonth(),
                               tmp.getDate(),
